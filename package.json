@@ -1,0 +1,25 @@
+{
+  "name": "track-ur-employees",
+  "version": "1.0.0",
+  "description": "## Description: A command line application that manages a company's employee database.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexysCa/track-ur-employees.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexysCa/track-ur-employees/issues"
+  },
+  "homepage": "https://github.com/AlexysCa/track-ur-employees#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.2.0",
+    "mysql2": "^2.3.3"
+  }
+}
