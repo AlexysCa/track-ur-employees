@@ -42,7 +42,7 @@ function initalPrompt() {
 }
     // need view all department function
     // view all roles function
-    // view all employees function
+    // ========== view all employees function ==========
     function viewEmployees() {
         var query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary
                      FROM employee
