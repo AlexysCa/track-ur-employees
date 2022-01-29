@@ -34,14 +34,32 @@ function initalPrompt() {
             case "Add An Employee":
                 addEmployee();
                 break;
+            case "View All Employees":
+                viewEmployees();
+                break;
         }
     })
+}
     // need view all department function
     // view all roles function
     // view all employees function
+    function viewEmployees() {
+        var query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary
+                     FROM employee
+                     LEFT JOIN role
+                     ON employee.role_id = role_id
+                     LEFT JOIN department
+                     ON department.id = role.department_id`
+        connection.query(query, function (err, res) {
+            if (err) throw err;
+            console.log(res);
+
+            initalPrompt();
+        })
+    }
     // add department function
     // add a role function
-    // add an employee function
+    // ========== add an employee function ============
 function addEmployee() {
     var query = `SELECT role.id, role.title, role.salary
                 FROM role`
@@ -97,6 +115,6 @@ function insertPrompt(roleInput) {
     })
 }
     // updates an employee role function 
-}
+
 
 initalPrompt();
