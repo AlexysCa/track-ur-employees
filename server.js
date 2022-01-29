@@ -37,6 +37,9 @@ function initalPrompt() {
             case "View All Employees":
                 viewEmployees();
                 break;
+            case "Add A Role":
+                addRole();
+                break;
         }
     })
 }
@@ -52,13 +55,69 @@ function initalPrompt() {
                      ON department.id = role.department_id`
         connection.query(query, function (err, res) {
             if (err) throw err;
-            console.log(res);
+            console.table(res);
 
             initalPrompt();
         })
     }
     // add department function
     // add a role function
+function addRole() {
+    var query = `SELECT department.id, department.name, role.salary AS budget
+                FROM employee
+                JOIN role
+                ON employee.role_id = role.id
+                JOIN department
+                ON department.id = role.department_id
+                GROUP BY department.id, department.name, role.salary`
+connection.query(query, function (err, res){
+    if (err) throw err;
+const roleChoices = res.map(({ id, name }) => ({
+    value: id, name: `${id} ${name}`
+}));
+    console.table(res);
+
+    addRolePrompt(roleChoices);
+})
+}
+
+function addRolePrompt(roleChoices) {
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            name: "role_title",
+            message: "Enter role title"
+        },
+        {
+            type: "input",
+            name: "role_salary",
+            message: "Enter role salary"
+        },
+        {
+            type: "list",
+            name: "department_id",
+            message: "Select desired department",
+            choices: roleChoices
+        },
+    ])
+    .then(function (data) {
+        var query = `INSERT INTO role SET ?`
+    connection.query(query, 
+        {
+        title: data.title,
+        salary: data.salary,
+        department_id: data.department_id
+        },
+    function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+
+        initalPrompt();
+    })
+    })
+}
     // ========== add an employee function ============
 function addEmployee() {
     var query = `SELECT role.id, role.title, role.salary
@@ -68,7 +127,7 @@ function addEmployee() {
         const roleInput = res.map(({ id, title, salary }) => ({
             value: id, title: `${title}`, salary: `${salary}`
         }));
-        console.log(res);
+        console.table(res);
 
         insertPrompt(roleInput);
     })
@@ -107,7 +166,7 @@ function insertPrompt(roleInput) {
         function (err, res) {
             if (err) throw err;
 
-            console.log(res);
+            console.table(res);
 
             initalPrompt();
             }
