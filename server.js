@@ -52,6 +52,9 @@ function initalPrompt() {
             case "Add A Department":
                 addDepartment();
                 break;
+            case "End":
+                connection.end();
+                break;
         }
     })
 }
