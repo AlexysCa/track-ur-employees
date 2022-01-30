@@ -1,7 +1,7 @@
 # SQL Challenge: Employee Tracker
 
 ## Description:
-A command line application that manages a company's employee database.
+A command line application that manages a company's employee database. A business owner could use this app to view and manage the departments, roles, and employees in their comapany. So they can focus on and organize their business.
 
 ## Tools:
 * Node.js
