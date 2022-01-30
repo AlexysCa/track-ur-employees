@@ -29,6 +29,7 @@ function initalPrompt() {
             "Update An Employee Role",
             "Remove An Employee",
             "Remove A Role",
+            "Remove A Department",
             "End"]
     })
     .then(function ({ task }) {
@@ -62,6 +63,9 @@ function initalPrompt() {
                 break;
             case "Remove A Role":
                 removeRole();
+                break;
+            case "Remove A Department":
+                removeDepartment();
                 break;
         }
     })
@@ -419,6 +423,44 @@ function deleteRolePrompt(deletingRole) {
         console.table(res);
 
         initalPrompt();
+        })
+    })
+}
+
+// ==========  Removes a department ========== 
+function removeDepartment() {
+    console.log("Removing a department from database!");
+        var query = `SELECT department.id, department.name
+                    FROM department`
+            connection.query(query, function (err, res) {
+                if (err) throw err;
+
+                const deletingDepartment = res.map(({ id, name }) => ({
+                   value: id, name: `${id} ${name}` 
+                }));
+            console.table(res);
+
+            deleteDepartPrompt(deletingDepartment);
+    })
+}
+function deleteDepartPrompt(deletingDepartment) {
+    inquirer
+    .prompt([
+        {
+            type: "list",
+            name: "department_id",
+            message: "Select which department to remove",
+            choices: deletingDepartment
+        }
+    ])
+    .then(function (data) {
+        var query = `DELETE FROM department WHERE ?`
+        connection.query(query, { id: data.department_id }, function (err, res) {
+            if (err) throw err;
+
+            console.table(res);
+
+            initalPrompt();
         })
     })
 }
