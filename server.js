@@ -60,6 +60,8 @@ function initalPrompt() {
 }
     // ========== view all department function ========== 
     function viewDepartments() {
+    console.log("Viewing all departments!");
+
         var query = `SELECT department.id, department.name
                     FROM department
                     LEFT JOIN role
@@ -74,6 +76,8 @@ function initalPrompt() {
 
     // ========== view all roles function ==========
     function viewRoles() {
+    console.log("Viewing all roles!");
+
         var query = `SELECT role.id, role.title, role.salary, role.department_id
                     FROM role
                     LEFT JOIN department
@@ -87,6 +91,8 @@ function initalPrompt() {
     }
     // ========== view all employees function ==========
     function viewEmployees() {
+    console.log("Viewing all employees!");
+
         var query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary
                      FROM employee
                      LEFT JOIN role
@@ -102,6 +108,8 @@ function initalPrompt() {
     }
     // ========== add department function ==========
 function addDepartment() {
+console.log("Adding a department!");
+
     var query = `SELECT department.id, department.name
                 FROM department
                 LEFT JOIN role
@@ -144,6 +152,8 @@ function departmentPrompt(departments) {
 
     // ========== add a role function ==========
 function addRole() {
+console.log("Adding a role!");
+
     var query = `SELECT department.id, department.name, role.salary AS budget
                 FROM employee
                 JOIN role
@@ -201,6 +211,8 @@ function addRolePrompt(roleChoices) {
 }
     // ========== add an employee function ============
 function addEmployee() {
+console.log("Adding an employee!");
+
     var query = `SELECT role.id, role.title, role.salary
                 FROM role`
     connection.query(query, function (err, res) {
@@ -256,6 +268,8 @@ function insertPrompt(roleInput) {
 }
     // updates an employee role function 
 function updateEmployeeRole() {
+console.log("Updated an employee role!");
+
     var query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary
                 FROM employee
                 JOIN role
