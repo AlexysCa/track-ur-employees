@@ -43,11 +43,33 @@ function initalPrompt() {
             case "View All Roles":
                 viewRoles();
                 break;
+            case "Update An Employee Role":
+                updateEmployeeRole();
+                break;
+            case "View All Departments":
+                viewDepartments();
+                break;
+            case "Add A Department":
+                addDepartment();
+                break;
         }
     })
 }
-    // need view all department function
-    // view all roles function
+    // ========== view all department function ========== 
+    function viewDepartments() {
+        var query = `SELECT department.id, department.name
+                    FROM department
+                    LEFT JOIN role
+                    ON role.department_id = department.id`
+        connection.query(query, function (err, res) {
+            if (err) throw err;
+            console.table(res);
+
+            initalPrompt();
+        })
+    }
+
+    // ========== view all roles function ==========
     function viewRoles() {
         var query = `SELECT role.id, role.title, role.salary, role.department_id
                     FROM role
@@ -75,7 +97,48 @@ function initalPrompt() {
             initalPrompt();
         })
     }
-    // add department function
+    // ========== add department function ==========
+function addDepartment() {
+    var query = `SELECT department.id, department.name
+                FROM department
+                LEFT JOIN role
+                ON role.department_id = department.id`
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+    const departments = res.map(({ id, name }) => ({
+        value: id, name: `${id} ${name}`
+    }));
+        console.table(res);
+
+        departmentPrompt(departments)
+    })
+}
+
+function departmentPrompt(departments) {
+    inquirer
+    .prompt ([
+        {
+            type: "input",
+            name: "department_name",
+            message: "Enter department name"
+        },
+    ])
+    .then(function (data) {
+        var query = `INSERT INTO department SET ?`
+    connection.query(query,
+        {
+        name: data.department_name
+        },
+    function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+
+        initalPrompt();
+        });
+    })
+}
+
     // ========== add a role function ==========
 function addRole() {
     var query = `SELECT department.id, department.name, role.salary AS budget
@@ -190,7 +253,69 @@ function insertPrompt(roleInput) {
 }
     // updates an employee role function 
 function updateEmployeeRole() {
-    var query
+    var query = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary
+                FROM employee
+                JOIN role
+                ON employee.role_id = role.id
+                JOIN department
+                ON department.id = role.department_id`
+    connection.query(query, function (err, res){
+        if (err) throw err;
+        const employeeSelections = res.map(({ id, first_name, last_name }) => ({
+            value: id, name: `${first_name} ${last_name}`
+        }));
+
+        console.table(res);
+
+        allRoles(employeeSelections);
+    })
+}
+function allRoles(employeeSelections) {
+    var query = `SELECT role.id, role.title, role.salary
+                FROM role`
+    let roleInput;
+
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+    roleInput = res.map(({ id, title, salary }) => ({
+       value: id, title: `${title}`, salary: `${salary}` 
+    }));
+
+        console.table(res);
+        updatePrompt(employeeSelections, roleInput)
+    });     
+}
+function updatePrompt(employeeSelections, roleInput) {
+    inquirer
+    .prompt([
+        {
+            type: "list",
+            name: "employee_id",
+            message: "Select which employee to update",
+            choices: employeeSelections
+        },
+        {
+            type: "list",
+            name: "role_id",
+            message: "Select desired role",
+            choices: roleInput
+        },
+    ])
+    .then(function (data) {
+        var query = `UPDATE employee SET role_id = ? WHERE id = ?`
+
+        connection.query(query,
+            [
+                data.role_id,
+                data.employee_id
+            ],
+            function (err, res) {
+                if (err) throw err;
+
+                console.table(res);
+                initalPrompt();
+        });
+    })
 }
 
 
