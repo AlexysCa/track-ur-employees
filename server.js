@@ -27,6 +27,8 @@ function initalPrompt() {
             "Add A Role",
             "Add An Employee",
             "Update An Employee Role",
+            "Remove An Employee",
+            "Remove A Role",
             "End"]
     })
     .then(function ({ task }) {
@@ -54,6 +56,12 @@ function initalPrompt() {
                 break;
             case "End":
                 connection.end();
+                break;
+            case "Remove An Employee":
+                removeEmployee();
+                break;
+            case "Remove A Role":
+                removeRole();
                 break;
         }
     })
@@ -266,7 +274,7 @@ function insertPrompt(roleInput) {
         )
     })
 }
-    // updates an employee role function 
+    // ========== updates an employee role function ==========
 function updateEmployeeRole() {
 console.log("Updated an employee role!");
 
@@ -334,6 +342,87 @@ function updatePrompt(employeeSelections, roleInput) {
         });
     })
 }
+
+// ========== Removes an employee ==========
+function removeEmployee() {
+console.log("Removing an employee from database!");
+
+    var query = `SELECT employee.id, employee.first_name, employee.last_name
+                FROM employee`
+        connection.query(query, function (err, res) {
+            if (err) throw err;
+
+            const deletingEmployee = res.map(({ id, first_name, last_name }) => ({
+                value: id, name: `${id} ${first_name} ${last_name}`
+            }));
+        console.table(res);
+
+        deletePrompt(deletingEmployee);
+
+    })
+}
+function deletePrompt(deletingEmployee) {
+    inquirer
+    .prompt([
+        {
+            type: "list",
+            name: "employee_id",
+            message: "Select which employee to remove",
+            choices: deletingEmployee
+        }
+    ])
+    .then(function (data) {
+    var query = `DELETE FROM employee WHERE ?`
+    connection.query(query, { id: data.employee_id }, function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+
+        initalPrompt();
+    })
+    })
+}
+
+// ==========  Removes a role ========== 
+function removeRole() {
+    console.log("Removing a role from database!");
+
+        var query = `SELECT role.id, role.title, role.salary
+                    FROM role`
+            connection.query(query, function (err, res) {
+                if (err) throw err;
+
+                const deletingRole = res.map(({ id, title, salary }) => ({
+                    value: id, name: `${id} ${title} ${salary}`
+                }));
+            console.table(res);
+
+            deleteRolePrompt(deletingRole);
+
+    })
+}
+function deleteRolePrompt(deletingRole) {
+    inquirer
+    .prompt([
+        {
+            type: "list",
+            name: "role_id",
+            message: "Select which role to remove",
+            choices: deletingRole
+        }
+    ])
+    .then(function (data) {
+    var query = `DELETE FROM role WHERE ?`
+    connection.query(query, { id: data.role_id }, function (err, res) {
+        if (err) throw err;
+
+        console.table(res);
+
+        initalPrompt();
+        })
+    })
+}
+
 
 
 initalPrompt();
